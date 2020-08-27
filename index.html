@@ -1,0 +1,152 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="main.css" type="text/css">
+        <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+    </head>
+    <body>
+        <h1>Etch-a-sketch</h1>
+        <div id="buttonContainer">
+            <button id='resetBtn' class="button">Reset</button>
+            <button id="blackPen" class="button">Black</button>
+            <button id="redPen" class="button">Red</button>
+            <button id="randomRgbPen" class="button">Random Color</button>
+            <button id="shaderPen" class="button">Shader</button>
+            <button id="eraser" class="button">Eraser</button>
+            <button id="userColor" class="button">Pick a Color</button>
+        </div>
+        <div id="squareContainer"></div>
+        <script>
+            const squareContainer = document.getElementById('squareContainer');
+            const buttonContainer = document.getElementById('buttonContainer');
+
+            createSquare(16);
+
+            function createSquare(numRows) {
+
+                squareContainer.style.gridTemplate = 'repeat('+numRows+', 1fr)/repeat('+numRows+', 1fr)';
+                let numSquares = numRows*numRows;
+                for (let squareIndex = 0; squareIndex < numSquares; squareIndex++){
+                let square = document.createElement('div');
+                square.className = 'square';
+                //square.classList.add('square');
+                squareContainer.appendChild(square);
+                squareContainer.addEventListener('mouseover', drawBlack);
+                }
+            };
+            
+            buttonContainer.addEventListener('click', function (e) {
+                if (e.target.id === 'blackPen') {
+                    squareContainer.removeEventListener('mouseover', eraseColor);
+                    squareContainer.removeEventListener('mouseover', drawRandomRgb);
+                    squareContainer.removeEventListener('mouseover', drawShade);
+                    squareContainer.removeEventListener('mouseover', drawRed);
+                    squareContainer.addEventListener('mouseover', drawBlack);
+                }
+                if (e.target.id === 'redPen') {
+                    squareContainer.removeEventListener('mouseover', eraseColor);
+                    squareContainer.removeEventListener('mouseover', drawRandomRgb);
+                    squareContainer.removeEventListener('mouseover', drawBlack);
+                    squareContainer.removeEventListener('mouseover', drawShade);
+                    squareContainer.addEventListener('mouseover', drawRed);
+                }
+                if (e.target.id === 'randomRgbPen') {
+                    squareContainer.removeEventListener('mouseover', eraseColor);
+                    squareContainer.removeEventListener('mouseover', drawShade);
+                    squareContainer.removeEventListener('mouseover', drawBlack);
+                    squareContainer.removeEventListener('mouseover', drawRed);
+                    squareContainer.addEventListener('mouseover', drawRandomRgb);
+                }
+                if (e.target.id === 'shaderPen') {
+                    squareContainer.removeEventListener('mouseover', eraseColor);
+                    squareContainer.removeEventListener('mouseover', drawRandomRgb);
+                    squareContainer.removeEventListener('mouseover', drawBlack);
+                    squareContainer.removeEventListener('mouseover', drawRed);
+                    squareContainer.addEventListener('mouseover', drawShade);
+                }
+                if (e.target.id === 'eraser') {
+                    squareContainer.removeEventListener('mouseover', drawShade);
+                    squareContainer.removeEventListener('mouseover', drawRandomRgb);
+                    squareContainer.removeEventListener('mouseover', drawBlack);
+                    squareContainer.removeEventListener('mouseover', drawRed);
+                    squareContainer.addEventListener('mouseover', eraseColor);
+                }
+                if (e.target.id === 'userColor') {
+                    squareContainer.removeEventListener('mouseover', drawShade);
+                    squareContainer.removeEventListener('mouseover', drawRandomRgb);
+                    squareContainer.removeEventListener('mouseover', drawBlack);
+                    squareContainer.removeEventListener('mouseover', drawRed);
+                    squareContainer.removeEventListener('mouseover', eraseColor);
+                    let userColor = prompt('Pick a color by entering a color name! e.g. purple, pink, green ...');
+                    squareContainer.addEventListener('mouseover', function(e) {
+                        if (e.target.className === 'square') {
+                    e.target.style.background = userColor;
+                        }
+                    })
+                }
+                if (e.target.id === 'resetBtn') {
+                    resetSquareContainer();
+                }
+            })
+
+            
+
+            function drawBlack(e) {
+                if (e.target.className === 'square') {
+                    e.target.style.background = 'black';
+                    e.target.style.opacity = 1;
+                }
+            }
+
+            function drawRed(e) {
+                if (e.target.className === 'square') {
+                    e.target.style.background = 'red';
+                    e.target.style.opacity = 1;
+                }
+            }
+
+            function eraseColor(e) {
+                if (e.target.className === 'square') {
+                    e.target.style.background = 'white';
+                }
+            }
+            
+            function drawRandomRgb(e) {
+                if (e.target.className === 'square') {
+                    e.target.style.background = randomRgb();
+                }
+            }
+
+            function drawShade(e) {
+                if (e.target.className === 'square') {
+                    e.target.style.background = 'black';
+                    e.target.style.opacity = reduceOpacity(e);
+                }
+            }
+
+            const randomRgb = () => {
+                let randNum = [];
+                for(let rgbIndex = 0; rgbIndex <= 2; rgbIndex++){
+                    randNum[rgbIndex] = Math.floor(Math.random()*256);
+                } return 'rgb('+randNum.join(', ')+')';
+             };
+             
+            function reduceOpacity(e){
+               let currentOpacity = +e.target.style.opacity;
+                if (currentOpacity < 1) {
+                    currentOpacity += 0.1;
+                }
+                e.target.style.opacity = currentOpacity;
+            };
+
+            function resetSquareContainer(){
+                squareContainer.innerHTML='';
+                createSquare(prompt('Create a new grid: How many squares do you want in a row?'));
+            };
+
+
+
+
+        </script>
+    </body>
+</html>
